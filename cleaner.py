@@ -13,3 +13,7 @@ def write_rows(rows, path):
         writer = csv.DictWriter(f, fieldnames=rows[0].keys())
         writer.writeheader()
         writer.writerows(rows)
+
+        
+def drop_empty_rows(rows):
+    return [row for row in rows if any(value.strip() for value in row.values())]
