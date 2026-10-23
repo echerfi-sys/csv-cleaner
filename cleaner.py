@@ -1,3 +1,4 @@
+import sys
 import csv
 
 
@@ -17,3 +18,32 @@ def write_rows(rows, path):
         
 def drop_empty_rows(rows):
     return [row for row in rows if any(value.strip() for value in row.values())]
+
+def strip_whitespace(rows):
+    return [{key.strip(): value.strip() for key, value in row.items()} for row in rows]
+
+
+def remove_duplicates(rows):
+    seen = set()
+    result = []
+    for row in rows:
+        key = tuple(row.items())
+        if key not in seen:
+            seen.add(key)
+            result.append(row)
+    return result
+
+
+def clean(rows):
+    rows = drop_empty_rows(rows)
+    rows = strip_whitespace(rows)
+    return remove_duplicates(rows)
+
+
+if __name__ == "__main__":
+    input_path, output_path = sys.argv[1], sys.argv[2]
+    write_rows(clean(read_rows(input_path)), output_path)
+
+
+def normalize_city(rows):
+    return [{**row, "city": row["city"].capitalize()} for row in rows]
